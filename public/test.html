@@ -1,0 +1,2481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Cloudera Manager</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico">
+
+    <link rel="stylesheet" href="/static/ext/jquery/css/bootstrap/jquery-ui-1.8.16.custom.css" type="text/css" media="all" />
+
+    <link type="text/css" rel="stylesheet" property="stylesheet" href="/static/cms/css/bootstrap.css?v=5.11.0">
+
+
+    <link type="text/css" rel="stylesheet" property="stylesheet" href="/static/cms/css/bootstrap-responsive.css?v=5.11.0">
+
+
+    <link type="text/css" rel="stylesheet" property="stylesheet" href="/static/cms/css/cms.css?v=5.11.0">
+
+
+
+    <link type="text/css" rel="stylesheet" property="stylesheet" href="/cmf/csd/resources?v=5.11.0">
+
+
+
+
+
+    <script type="text/javascript" src="/static/ext/jquery/js/jquery-2.1.1.min.js"></script>
+    <script type="text/javascript" src="/static/ext/jquery/js/jquery-migrate-1.4.1.min.js"></script>
+
+
+    <script type="text/javascript" src="/static/ext/requirejs/require.js"></script>
+    <script type="text/javascript">
+        var clouderaManager = {
+            version: '5.11.0',
+            state: '0',
+            license: 'no uuid',
+            conf: { monitor: false },
+            serverNow: new Date(1501231643347),
+            timezoneOffset: 28800000,
+            timezoneDisplayName: "CST",
+            sessionTimeout: 1800,
+            locale: "en"
+        };
+
+        var requireJsConfig = {
+                "paths": {
+                    "text": "ext/requirejs/plugins/text",
+                    "json": "ext/requirejs/plugins/json",
+                    "bootstrap": "ext/bootstrap",
+                    "bootstrap-multiselect": "ext/bootstrap-multiselect",
+                    "d3": "ext/d3/d3.min",
+                    "dompurify": "ext/dompurify/purify.min",
+                    "gridster": "ext/jquery/plugins/jquery.gridster",
+                    "moment": "ext/moment/moment-with-locales.min",
+                    "pourover": "ext/pourover.min",
+                    "pubsub": "ext/pubsub",
+                    "rickshaw": "ext/rickshaw/rickshaw.min",
+                    "spinner": "ext/spin/spin.min",
+                    "daterangepicker": "ext/daterangepicker",
+                    "c3": "ext/c3",
+                    "_": "ext/underscore/underscore-min",
+                    "jquery.validate": "ext/jquery/plugins/jquery.validate.min",
+                    "jquery.dataTables": "ext/jquery/plugins/jquery.dataTables-1.8.2.min",
+                    "jquery.treeTable": "ext/jquery/plugins/jquery.treeTable.min",
+                    "jquery.tokeninput": "ext/jquery/plugins/jquery.tokeninput.min",
+                    "jquery.layout": "ext/jquery/plugins/jquery.layout-1.4.3.min",
+                    "jquery.layout.state": "ext/jquery/plugins/jquery.layout.state",
+                    "cloudera": "js/cloudera",
+                    "cloudera-ui": "ext/cloudera-ui",
+                    "common": "js/common",
+                    "jquery": "ext/jquery/js/shimForjQuery",
+                    "knockout": "ext/knockout/knockout-latest",
+                    "komapping": "ext/knockout.mapping/knockout.mapping",
+                    "$": "ext/jquery/js/shim",
+                    "cmf": "/cmf",
+                    "templates": "/cmf/jamon-templates"
+                },
+                "shim": {
+                    "_": {
+                        "exports": "_"
+                    },
+                    "jquery.layout.state": {
+                        "deps": ["jquery.layout"]
+                    },
+                    "knockout": {
+                        "exports": "ko"
+                    },
+                    "pourover": {
+                        "deps": ["_"]
+                    },
+                    "komapping": {
+                        "deps": ["knockout"]
+                    },
+                    "d3": {
+                        "exports": "d3"
+                    }
+                }
+            }
+        ;
+
+
+        requireJsConfig.paths.resources = '/cmf/resources/en/ui';
+
+
+
+        requireJsConfig.paths.cloudera = 'release/' + requireJsConfig.paths.cloudera;
+        requireJsConfig.paths.common = 'release/' + requireJsConfig.paths.common;
+
+
+        require.config({
+            baseUrl: "/static",
+            urlArgs: "v=" + "70cb1442626406432a6e7af5bdf206a384ca3f98",
+
+            paths: requireJsConfig.paths,
+            shim: requireJsConfig.shim
+        });
+    </script>
+
+
+    <script type="text/javascript" src="/static/ext/Class.js"></script>
+
+
+    <script type="text/javascript" src="/static/ext/jquery/plugins/bootstrap-2.3.2.min.js"></script>
+
+
+
+
+
+
+    <script type="text/javascript" src="/static/ext/jquery/plugins/jquery-plugins-all-5.4.min.js"></script>
+
+
+    <script type="text/javascript">
+        require([
+            "cloudera/MegaBase"
+        ], function(MegaBase) {
+            jQuery(function() {
+                var megaBase = new MegaBase({
+                    loggedIn: true
+                });
+            });
+        });
+    </script>
+</head>
+<body class="Fill LandingPage">
+
+
+
+
+
+
+<nav class="navbar">
+    <div class="navbar-inner">
+        <a class="brand" data-event-category="Top Nav Menu" data-event="Product Logo" href="/cmf/" title="Cloudera Manager: Home"><img src="/static/cms/img/logo.svg"></img></a>
+        <span class="hidden productName">Cloudera Manager</span>
+        <!-- Be sure to leave the brand out there if you want it shown -->
+
+
+        <div class="navbar-collapse pull-right" id="navbar-collapse">
+            <ul class="nav">
+                <li>
+                    <ul class="nav nowrap systray-container">
+
+
+                        <li>
+                            <a data-event-category="Top Nav Menu" data-event="Parcels" title="Parcels" href="/cmf/parcel/status"> <i class="tiny cm-icon cm-icon-parcels"></i></a>
+                        </li>
+
+
+
+
+                        <li>
+                            <a data-event-category="Top Nav Menu" data-event="Running Commands" class="AjaxLink link-with-counter" title="Running Commands"
+                               href="/cmf/commands/topLevelRunningCommandsPopup">
+                                <i class="tiny cm-icon cm-icon-running-commands"></i>
+                                <span class="AutoRefreshableCounter"
+                                      data-update-href="/cmf/commands/topLevelRunningCommandsCount"></span>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </li>
+
+                <li><div class="navbar-search entity-search">
+                    <input class="input-mini showTooltip"
+                           data-bind="event: {focus: expand, blur: collapse, keyup: keyup}"
+                           type="search"
+                           autocomplete="off"
+                           title="Search for services, roles, hosts, configurations, wizards and so on. You can activate this search box via the shortcut key /."
+                           data-placeholder-short="Search"
+                           data-placeholder-long="Search"
+                           placeholder="Search"/>
+                </div>
+                </li>
+
+
+            </ul>
+            <ul class="nav">
+
+
+                <li role="presentation" class="dropdown "
+
+                >
+                    <a href="#" aria-haspopup="true" class="  dropdown-toggle" data-toggle="dropdown">
+
+                        <span class="dropdown-text">Support</span> <b aria-hidden="true" class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+
+
+
+
+                        <li ><a data-event-category="Support" data-event="Community Forums" target="_blank" role="menuitem"
+
+
+                                href="http://tiny.cloudera.com/scm-users-mailing-list"
+                        >
+                            Community Forums<i class="externalLink"></i></a>
+                        </li>
+
+
+
+
+
+                        <li ><a data-event-category="Support" data-event="Scheduled Diagnostics: Weekly" role="menuitem"
+
+                                title="Scheduled Diagnostics"
+                                href="/cmf/settings?groupKey=config.scm.support.display_group"
+                        >
+                            Scheduled Diagnostics: Weekly</a>
+                        </li>
+
+
+
+
+
+                        <li class="divider"></li>
+
+
+
+
+
+                        <li ><a data-event-category="Support" data-event="Help" target="_blank" role="menuitem"
+                                id="helpAppLink"
+
+                                href="/cmf/help/scm-help-guide"
+                        >
+                            Help<i class="externalLink"></i></a>
+                        </li>
+
+
+
+
+
+                        <li ><a data-event-category="Support" data-event="Installation Guide" target="_blank" role="menuitem"
+                                id="helpInstallLink"
+
+                                href="/cmf/help/scm-install-guide"
+                        >
+                            Installation Guide<i class="externalLink"></i></a>
+                        </li>
+
+
+
+
+
+                        <li ><a data-event-category="Support" data-event="API Documentation" target="_blank" role="menuitem"
+                                id="helpApiLink"
+
+                                href="/static/apidocs/"
+                        >
+                            API Documentation<i class="externalLink"></i></a>
+                        </li>
+
+
+
+
+
+                        <li ><a data-event-category="Support" data-event="Release Notes" target="_blank" role="menuitem"
+
+
+                                href="http://tiny.cloudera.com/cm-rel-notes-5.11"
+                        >
+                            Release Notes<i class="externalLink"></i></a>
+                        </li>
+
+
+
+
+
+                        <li ><a data-event-category="Support" data-event="About" role="menuitem"
+
+
+                                href="/cmf/help/about"
+                                class="AjaxLink">
+                            About</a>
+                        </li>
+
+
+
+                    </ul>
+
+
+                </li>
+
+
+
+
+                <li role="presentation" class="dropdown "
+
+                >
+                    <a href="#" aria-haspopup="true" class="  dropdown-toggle" data-toggle="dropdown">
+
+                        <span class="dropdown-text">admin</span> <b aria-hidden="true" class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" role="menu">
+
+
+
+
+                        <li ><a data-event-category="User" data-event="My Profile" role="menuitem"
+
+
+                                href="/cmf/help/userProfile"
+                                class="AjaxLink">
+                            My Profile</a>
+                        </li>
+
+
+
+
+
+                        <li ><a data-event-category="User" data-event="Change Password" role="menuitem"
+
+
+                                href="/cmf/password"
+                                class="AjaxLink">
+                            Change Password</a>
+                        </li>
+
+
+
+
+
+                        <li ><a data-event-category="User" data-event="Logout" role="menuitem"
+
+
+                                href="/cmf/logout"
+                        >
+                            Logout</a>
+                        </li>
+
+
+
+                    </ul>
+
+
+                </li>
+
+
+
+            </ul>
+
+
+        </div>
+
+
+        <ul class="nav navbar__menu--top">
+
+
+            <li role="presentation" class="dropdown "
+                id="clustersLinks"
+            >
+                <a href="#" aria-haspopup="true" class="  dropdown-toggle" data-toggle="dropdown">
+
+                    <span class="dropdown-text">Clusters</span> <b aria-hidden="true" class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+
+
+                </ul>
+
+
+            </li>
+
+
+
+
+            <li role="presentation" class="dropdown "
+                id="hostsLinks"
+            >
+                <a href="#" aria-haspopup="true" class="  dropdown-toggle" data-toggle="dropdown">
+
+                    <span class="dropdown-text">Hosts</span> <b aria-hidden="true" class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="All Hosts" role="menuitem"
+
+
+                            href="/cmf/hardware/hosts"
+                    >
+                        All Hosts</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Roles" role="menuitem"
+
+
+                            href="/cmf/hardware/roles"
+                    >
+                        Roles</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Host Templates" role="menuitem"
+
+
+                            href="/cmf/hardware/hosts/templates"
+                    >
+                        Host Templates</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Disks Overview" role="menuitem"
+
+
+                            href="/cmf/hardware/disksOverview"
+                    >
+                        Disks Overview</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Parcels" role="menuitem"
+
+
+                            href="/cmf/parcel/status"
+                    >
+                        Parcels</a>
+                    </li>
+
+
+
+                </ul>
+
+
+            </li>
+
+
+
+
+            <li role="presentation" class="dropdown "
+                id="diagnoseLinks"
+            >
+                <a href="#" aria-haspopup="true" class="  dropdown-toggle" data-toggle="dropdown">
+
+                    <span class="dropdown-text">Diagnostics</span> <b aria-hidden="true" class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Events" role="menuitem"
+
+
+                            href="/cmf/events"
+                    >
+                        Events</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Logs" role="menuitem"
+
+
+                            href="/cmf/process/all/logs/search"
+                    >
+                        Logs</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Server Log" role="menuitem"
+
+
+                            href="/cmf/serverlog"
+                    >
+                        Server Log</a>
+                    </li>
+
+
+
+                </ul>
+
+
+            </li>
+
+
+
+
+            <li role="presentation" >
+
+                <a data-event-category="Top Nav Menu" data-event="Audits" role="menuitem"
+
+
+                   href="/cmf/audits/"
+                >
+                    Audits</a>
+
+
+            </li>
+
+
+
+
+            <li role="presentation" class="dropdown "
+                id="chartsLinks"
+            >
+                <a href="#" aria-haspopup="true" class="  dropdown-toggle" data-toggle="dropdown">
+
+                    <span class="dropdown-text">Charts</span> <b aria-hidden="true" class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+
+
+                </ul>
+
+
+            </li>
+
+
+
+
+            <li role="presentation" class="dropdown "
+                id="adminLinks"
+            >
+                <a href="#" aria-haspopup="true" class="  dropdown-toggle" data-toggle="dropdown">
+
+                    <span class="dropdown-text">Administration</span> <b aria-hidden="true" class="caret"></b>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Settings" role="menuitem"
+
+
+                            href="/cmf/settings"
+                    >
+                        Settings</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Alerts" role="menuitem"
+
+
+                            href="/cmf/alerts/config"
+                    >
+                        Alerts</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Users" role="menuitem"
+
+
+                            href="/cmf/users"
+                    >
+                        Users</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Security" role="menuitem"
+
+
+                            href="/cmf/cluster/kerberosStatus"
+                    >
+                        Security</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="License" role="menuitem"
+
+
+                            href="/cmf/license/settings"
+                    >
+                        License</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="Language" role="menuitem"
+
+
+                            href="/cmf/language"
+                    >
+                        Language</a>
+                    </li>
+
+
+
+
+
+                    <li ><a data-event-category="Top Nav Menu" data-event="AWS Credentials" role="menuitem"
+
+
+                            href="/cmf/accounts?category=AWS"
+                    >
+                        AWS Credentials</a>
+                    </li>
+
+
+
+                </ul>
+
+
+            </li>
+
+
+
+        </ul>
+
+
+
+
+    </div>
+</nav>
+
+<div class="env-ribbon env-ribbon--black"></div>
+
+
+
+
+<div tabindex="-1"
+
+     class="modal  hide" style="display:none"
+
+
+     data-top-level-modal="true"
+
+
+     id="errorDialog">
+    <div class="modal-content">
+        <div class="modal-header">
+
+            <button type="button" class="close"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            <h2 class="modal-title"></h2>
+
+        </div>
+        <div class="modal-body ">
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn dismissButton btn-primary" >Close</button>
+
+
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    require([
+        "cloudera/common/ModalDialogBase"
+    ], function(ModalDialogBase) {
+        jQuery(function($) {
+            var $modal = $("#errorDialog");
+            var options = {
+                topLevelModal: true,
+                defaultVisible: false,
+                destroyOnClose: false,
+                focusFooterButton: true,
+                backdrop: 'true',
+                primaryActionOnEnterKey: true
+            };
+            $modal.ModalDialogBase(options);
+        });
+    });
+</script>
+
+
+
+
+
+<div tabindex="-1"
+
+     class="modal  hide" style="display:none"
+
+
+     data-top-level-modal="true"
+
+
+     id="confirmationDialog">
+    <div class="modal-content">
+        <div class="modal-header">
+
+            <button type="button" class="close"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            <h2 class="modal-title">Confirm
+            </h2>
+
+        </div>
+        <div class="modal-body ">
+            <p class="confirmation-message"></p>
+
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn dismissButton btn-link" >Cancel</button>
+
+
+            <button class="confirmation-button btn btn-primary">OK</button>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    require([
+        "cloudera/common/ModalDialogBase"
+    ], function(ModalDialogBase) {
+        jQuery(function($) {
+            var $modal = $("#confirmationDialog");
+            var options = {
+                topLevelModal: true,
+                defaultVisible: false,
+                destroyOnClose: false,
+                focusFooterButton: true,
+                backdrop: 'true',
+                primaryActionOnEnterKey: true
+            };
+            $modal.ModalDialogBase(options);
+        });
+    });
+</script>
+
+
+
+
+
+
+
+<div tabindex="-1"
+
+     class="modal  hide" style="display:none"
+
+
+
+     id="addToDashboardDialog">
+    <div class="modal-content">
+        <div class="modal-header">
+
+            <button type="button" class="close"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+            <h2 class="modal-title">Save Chart
+            </h2>
+
+        </div>
+        <div class="modal-body ">
+            <div class="add-to-dashboad-dialog">
+                <div class="alert alert-success" data-bind="visible: successMessage() !== null, safeHTML: successMessage"></div>
+                <div class="alert alert-error" data-bind="visible: errorMessage() !== null, text: errorMessage"></div>
+                <form class="form-horizontal"
+                      method="POST"
+                      data-bind="submit: submitForm, visible: successMessage() === null, style: {visibility: loading() ? 'hidden' : 'visible'}">
+                    <div class="control-group">
+                        <label class="control-label">Chart Title</label>
+                        <div class="controls">
+                            <input type="text" placeholder="Enter chart title" class="input-xlarge" data-bind="value: title, valueUpdate: 'afterkeydown'"/>
+                        </div>
+                    </div>
+
+                    <label class="radio" data-bind="visible: canSaveToCurrentDashboard">
+                        <input type="radio" name="mode" value="save-plot" data-bind="checked: mode">
+                        Update chart in current dashboard <strong data-bind="text: currentDashboardDisplayName"></strong>
+                    </label>
+
+                    <label class="radio">
+                        <input type="radio" name="mode" value="add-plot" data-bind="checked: mode">
+                        <span data-bind="visible: canSaveToCurrentDashboard">Add chart to another dashboard</span>
+                        <span data-bind="visible: !canSaveToCurrentDashboard()">Add chart to an existing custom or system dashboard</span>
+                    </label>
+                    <div class="control-group" data-bind="visible: mode() === 'add-plot'">
+                        <label class="control-label">Dashboard Name</label>
+                        <div class="controls">
+                            <select data-bind="value: targetDashboardName">
+                                <option value="">Select a Dashboard</option>
+                                <optgroup label="Custom Dashboards" data-bind="foreach: allDashboards().userCreatedDashboards">
+                                    <option data-bind="value: name, text: displayName"></option>
+                                </optgroup>
+                                <optgroup label="System Dashboards" data-bind="foreach: allDashboards().systemDashboards">
+                                    <option data-bind="value: name, text: displayName"></option>
+                                </optgroup>
+                            </select>
+                        </div>
+                    </div>
+
+                    <label class="radio">
+                        <input type="radio" name="mode" value="add-to-new" data-bind="checked: mode">
+                        Add chart to a new custom dashboard
+                    </label>
+                    <div class="control-group" data-bind="visible: mode() === 'add-to-new'">
+                        <label class="control-label">Dashboard Name</label>
+                        <div class="controls">
+                            <input type="text" class="input-xlarge" data-bind="value: newDashboardName, valueUpdate: 'afterkeydown'"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+        </div>
+        <div class="modal-footer">
+            <!-- ko if: successMessage() === null -->
+            <button class="btn dismissButton btn-link" >Cancel</button>
+
+
+            <!-- /ko -->
+
+            <button class="btn btn-primary FormSubmitLink"
+                    data-bind="visible: successMessage() === null, attr: {'disabled': !canSubmitForm()}"
+                    data-form-selector="#addToDashboardDialog form">
+                Save Chart
+                <i data-bind="css: { 'cui-spinner': loading }"></i>
+            </button>
+
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    require([
+        "cloudera/common/ModalDialogBase"
+    ], function(ModalDialogBase) {
+        jQuery(function($) {
+            var $modal = $("#addToDashboardDialog");
+            var options = {
+                topLevelModal: false,
+                defaultVisible: false,
+                destroyOnClose: false,
+                focusFooterButton: false,
+                backdrop: 'true',
+                primaryActionOnEnterKey: true
+            };
+            $modal.ModalDialogBase(options);
+        });
+    });
+</script>
+
+
+
+
+
+
+<div class="page-title-and-timecontrol cui-title-bar">
+    <h1><span >Home</span></h1>
+
+
+
+    <span class="primary-action"></span>
+
+
+
+    <div id="timeControlMini" class="h1-toolbar pull-right">
+
+        <div class="time-range-selector time-only">
+            <div class="buttons text-right">
+                <a aria-label="Previous" class="previous hidden" href="#"><i aria-hidden="true" class="icon-backward"></i></a>
+
+                <span class="content">
+                <a href="#" data-bind="click: showDateTimeSelector" class="time-label selectedTimeRangeLabel"></a>
+
+            </span>
+
+                <a aria-label="Next" class="next hidden" href="#"><i aria-hidden="true" class="icon-forward"></i></a>
+
+                <a aria-label="Switch to Current" class="now switchToCurrent hidden" href="#"><i aria-hidden="true" class="icon-fast-forward"></i></a>
+            </div>
+        </div>
+
+    </div><!-- #timeControlMini -->
+
+
+
+
+
+
+    <script type="text/javascript">
+        require([
+            "cloudera/chart/TimeControl"
+        ], function(TimeControl) {
+
+            jQuery(function($) {
+                var options = {
+                    id: "cmsTimeControl",
+                    largePlotDialogContainer: "#largePlotDialog",
+                    mode: "TIMEONLY",
+                    firstVisibleDate: new Date(1501229843346),
+                    lastVisibleDate: new Date(1501231643346),
+                    firstDate: new Date(1501226243346),
+                    lastDate: new Date(1501231643346),
+                    markerDate: new Date(1501231643346),
+                    showMarker: true,
+                    showRange: true,
+                    shouldLockDuration: false,
+                    isCurrentMode: true,
+                    minUpdateIntervalInMS: 10000
+                };
+
+                var tc = new TimeControl(options);
+            });
+        });
+    </script>
+
+
+
+    <div tabindex="-1"
+
+         class="modal modal-xl hide" style="display:none"
+
+
+
+         id="largePlotDialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                <h2 class="modal-title"></h2>
+
+            </div>
+            <div class="modal-body ">
+                <div class="large-plot-container disables-auto-update">
+                    <div class="large-plot-sidebar">
+                        <div class="large-plot-time-control">
+                            <div class="time-range-selector" id="cmsTimeRangeSelector">
+                                <div class="buttons text-center">
+                                    <a href="#" class="previous" title="Previous"><i class="icon-backward"></i></a>
+                                    <span class="content">
+        <span class="time-label selectedTimeRangeLabel"></span>
+    </span>
+                                    <a href="#" class="next" title="Next"><i class="icon-forward"></i></a>
+                                    <a href="#" class="now" title="Now"><i class="icon-fast-forward"></i></a>
+                                </div>
+                                <ul class="nav nav-pills unstyled">
+                                    <li><a href="#" title="Last 30 Minutes" data-minutes="30">30m</a></li>
+                                    <li><a href="#" title="Last 1 Hour" data-minutes="60">1h</a></li>
+                                    <li><a href="#" title="Last 2 Hours" data-minutes="120">2h</a></li>
+                                    <li><a href="#" title="Last 6 Hours" data-minutes="360">6h</a></li>
+                                    <li><a href="#" title="Last 12 Hours" data-minutes="720">12h</a></li>
+                                    <li><a href="#" title="Last 1 Day" data-minutes="1440">1d</a></li>
+                                    <li><a href="#" title="Last 1 Week" data-minutes="10080">7d</a></li>
+                                    <li><a href="#" title="Last 1 Month" data-minutes="43200">30d</a></li>
+                                </ul>
+                            </div>
+
+                        </div>
+                        <div class="tabbable">
+                            <i class="charts-result-spinner IconSpinner24x24" style="display: none"></i>
+                            <ul class="nav nav-tabs">
+                                <li><a data-toggle="tab" href="#tab-ts-legend">Legend</a></li>
+                                <li><a data-toggle="tab" href="#tab-histogram-legend">Legend</a></li>
+                                <li><a data-toggle="tab" href="#tab-stream-information">Details</a></li>
+                                <li><a data-toggle="tab" href="#tab-distribution">Distribution</a></li>
+                                <li><a data-toggle="tab" href="#tab-stats">Statistics</a></li>
+                                <li><a data-toggle="tab" href="#tab-density-plot-legend">Legend</a></li>
+                                <li><a data-toggle="tab" href="#tab-density-plot-stats">Statistics</a></li>
+                                <!--<li><a data-toggle="tab" href="#tab-bin-information"> Bin </a></li>-->
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane" id="tab-ts-legend"></div>
+                                <div class="tab-pane" id="tab-histogram-legend"></div>
+                                <div class="tab-pane" id="tab-stream-information">
+                                    <div class="muted message text-center">Select a point in the chart to see additional details.</div>
+                                </div>
+                                <div class="tab-pane" id="tab-distribution"></div>
+                                <div class="tab-pane" id="tab-stats"></div>
+                                <div class="tab-pane" id="tab-density-plot-legend"></div>
+                                <div class="tab-pane" id="tab-density-plot-stats"></div>
+                                <!--<div class="tab-pane" id="tab-bin-information"></div>-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="large-plot-header">
+                        <dl class="dl-horizontal" data-bind="visible: hasPoint() && supported()">
+                            <dt>Query</dt>
+                            <dd class="tsquery"></dd>
+                            <dt class="desired-rollup showTooltip" title="Data granularity selection controls the granularity level used when fetching data for this chart. Not all levels may be available, either because the data has already been deleted or because it would overwhelm the system.">Data Granularity</dt>
+                            <dd class="desired-rollup"><select id="inputChartDesiredRollup" class="desired-rollup-selector" data-bind="value:viewModel.desiredRollup">
+                                <option value="">Auto</option>
+
+                                <option value="RAW">Raw</option>
+
+                                <option value="TEN_MINUTELY">Every 10 minutes</option>
+
+                                <option value="HOURLY">Hourly</option>
+
+                                <option value="SIX_HOURLY">Every six hours</option>
+
+                                <option value="DAILY">Daily</option>
+
+                                <option value="WEEKLY">Weekly</option>
+
+                            </select>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="large-plot-chart">
+                        <div class="large-plot-view-container"></div>
+                    </div>
+                </div>
+
+                <script type="text/html" id="tmpl-density-plot-stats">
+                    <div class="muted message text-center select-slice-message" data-bind="visible: !hasCell()"> Select a slice for more information </div>
+                    <h4 data-bind="visible: hasCell()"> Statistics for the Current Slice </h4>
+                    <dl class="dl-horizontal" data-bind="foreach: stats">
+                        <dt data-bind="text: label"></dt>
+                        <!-- ko if: value !== null -->
+                        <dd data-bind="text: value"></dd>
+                        <!-- /ko -->
+                        <!-- ko if: value === null && url === null -->
+                        <dd data-bind="text: displayName"></dd>
+                        <!-- /ko -->
+                        <!-- ko if: value === null && url !== null -->
+                        <dd>
+                            <a data-bind="text: displayName, attr: {href: url, title: displayName}"></a>
+                        </dd>
+                        <!-- /ko -->
+                    </dl>
+                </script>
+
+                <script type="text/html" id="tmpl-bin-information">
+                    <div class="muted message text-center select-bin-message" data-bind="visible: !hasCell()"> Select a bin for more information </div>
+                    <dl class="dl-horizontal" data-bind="foreach: stats">
+                        <dt data-bind="text: label"></dt>
+                        <!-- ko if: value !== null -->
+                        <dd data-bind="text: value"></dd>
+                        <!-- /ko -->
+                        <!-- ko if: value === null && url === null -->
+                        <dd data-bind="text: displayName"></dd>
+                        <!-- /ko -->
+                        <!-- ko if: value === null && url !== null -->
+                        <dd>
+                            <a data-bind="text: displayName, attr: {href: url, title: displayName}"></a>
+                        </dd>
+                        <!-- /ko -->
+                    </dl>
+                </script>
+
+                <script type="text/html" id="tmpl-large-plot-distribution">
+                    <div class="muted message text-center select-point-message" data-bind="visible: !hasPoint()">Select a point in the chart to see distribution of the aggregated values.</div>
+                    <div class="muted message text-center" data-bind="visible: !supported()">Selected stream doesn't contain aggregated values.</div>
+                    <div class="distribution-header" data-bind="visible: hasPoint() && supported()">
+                        <div class="hover-title">
+                            <span class="swatch" data-bind="style: {backgroundColor: seriesColor}"></span>
+                            <div data-bind="text: entityDisplayName"></div>
+                        </div>
+                        <div data-bind="text: metricDisplayName"></div>
+                        <table>
+                            <tbody>
+                            <tr>
+                                <td>Time</td>
+                                <td data-bind="text: formattedDate"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="distribution-view-container"></div>
+                </script>
+
+                <script type="text/html" id="tmpl-large-plot-stats">
+                    <div class="muted message text-center" data-bind="visible: stats().length === 0">Not Available</div>
+                    <dl class="dl-horizontal" data-bind="foreach: stats">
+                        <dt data-bind="text: label"></dt>
+                        <!-- ko if: value !== null -->
+                        <dd data-bind="text: value"></dd>
+                        <!-- /ko -->
+                        <!-- ko if: value === null && url === null -->
+                        <dd data-bind="text: displayName"></dd>
+                        <!-- /ko -->
+                        <!-- ko if: value === null && url !== null -->
+                        <dd>
+                            <a data-bind="text: displayName, attr: {href: url, title: displayName}"></a>
+                        </dd>
+                        <!-- /ko -->
+                    </dl>
+                </script>
+
+                <script type="text/html" id="tmpl-hover-details">
+                    <div class="hover-details">
+                        <!-- ko template:{ name: 'tmpl-hover-details-summary' } --><!-- /ko -->
+                        <!-- ko if: expanded -->
+                        <a class="close" data-bind="click: close">&times;</a>
+                        <!-- ko template:{ name: 'tmpl-hover-details-attributes' } --><!-- /ko -->
+                        <!-- ko if: !isWorkStream() && isHeatmap -->
+                        <!-- ko template:{ name: 'tmpl-hover-details-chart' } --><!-- /ko -->
+                        <!-- /ko -->
+                        <!-- /ko -->
+                    </div>
+                    <!-- ko if: expanded -->
+                    <!-- ko template:{ name: 'tmpl-hover-details-buttons' } --><!-- /ko -->
+                    <!-- /ko -->
+                </script>
+
+                <script type="text/html" id="tmpl-hover-details-summary">
+                    <div class="hover-title">
+                        <span class="swatch" data-bind="style: {backgroundColor: seriesColor}"></span>
+                        <div data-bind="text: entityDisplayName"></div>
+                    </div>
+                    <div data-bind="text: metricDisplayName"></div>
+                    <!-- ko if: expanded && isDensityPlot -->
+                    <!-- ko template:{ name: 'tmpl-density-plot-hover-details-expanded' } --><!-- /ko-->
+                    <!-- /ko -->
+                    <!-- ko ifnot: expanded && isDensityPlot -->
+                    <!-- ko if: expanded && !isSinglePointStream() -->
+                    <!-- ko template:{ name: 'tmpl-hover-details-expanded-point' } --><!-- /ko -->
+                    <!-- /ko -->
+                    <!-- ko ifnot: expanded && !isSinglePointStream() -->
+                    <!-- ko template:{ name: 'tmpl-hover-details-collapsed-point' } --><!-- /ko -->
+                    <!-- /ko -->
+                    <!-- /ko -->
+                    <!-- ko if: !expanded && canExpand -->
+                    <div class="expand-message">[ Click to expand ]</div>
+                    <!-- /ko -->
+                </script>
+
+                <script type="text/html" id="tmpl-density-plot-hover-details-expanded">
+                    <!-- ko if: point.value.statistics !== null && point.value.topValues !== null && point.value.bottomValues !== null -->
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>Number of entities</td>
+                            <td data-bind="text: point.value.statistics.count"></td>
+                        </tr>
+                        <tr>
+                            <td>Max</td>
+                            <td data-bind="text: Math.round(point.value.topValues[0].value * 10) / 10"></td>
+                        </tr>
+                        <tr>
+                            <td>Mean</td>
+                            <td data-bind="text: Math.round(point.value.statistics.mean * 100) / 100"></td>
+                        </tr>
+                        <tr>
+                            <td>Min</td>
+                            <td data-bind="text: Math.round(point.value.bottomValues[0].value * 10) / 10"></td>
+                        </tr>
+                        <tr>
+                            <td>Sum</td>
+                            <td data-bind="text: Math.round(point.value.statistics.sum * 10) / 10"></td>
+                        </tr>
+                        <tr>
+                            <td>Standard Deviation</td>
+                            <td data-bind="text: Math.round(point.value.statistics.standardDeviation * 100) / 100">
+                            </td>
+                        <tr>
+                        </tbody>
+                    </table>
+                    <!-- /ko -->
+                </script>
+
+                <script type="text/html" id="tmpl-hover-details-collapsed-point">
+                    <table>
+                        <tbody>
+                        <tr>
+                            <td>Time</td>
+                            <td data-bind="text: formattedDate"></td>
+                        </tr>
+                        <!-- ko if: !hasRollupStats() || isSinglePointStream() -->
+                        <tr>
+                            <td>Value</td>
+                            <td><span data-bind="text: formattedYValue"></span><span data-bind="text: rawYValue"></span></td>
+                        </tr>
+                        <!-- /ko -->
+                        <!-- ko ifnot: !hasRollupStats() || isSinglePointStream() -->
+                        <tr data-bind="css: {highlighted: selectedRollupField() === 'max'}">
+                            <td>Max</td>
+                            <td data-bind="text: yFormatter(rollupStatistics().max)"></td>
+                        </tr>
+                        <tr data-bind="css: {highlighted: selectedRollupField() === 'mean'}">
+                            <td>Mean</td>
+                            <td><span data-bind="text: formattedYValue"></span></td>
+                        </tr>
+                        <tr data-bind="css: {highlighted: selectedRollupField() === 'min'}">
+                            <td>Min</td>
+                            <td data-bind="text: yFormatter(rollupStatistics().min)"></td>
+                        </tr>
+                        <!-- /ko -->
+                        </tbody>
+                    </table>
+                </script>
+
+
+                <script type="text/html" id="tmpl-hover-details-expanded-point">
+                    <div class="rollup">
+                        <div class="header">
+                            <h4>Point Attributes</h4>
+                            <div class="nav-buttons">
+                                <!-- ko if: canZoomIn() -->
+                                <a class="btn" href="#" data-bind="click: zoomIn" title="Click to zoom in to the time range covered by this point"><i aria-hidden="true" class="icon-zoom-in"></i></a>
+                                <!-- /ko -->
+                                <a class="btn previous" data-bind="click: previousPoint" title="Navigate to previous point">&lt;</a>
+                                <a class="btn next" data-bind="click: nextPoint" title="Navigate to next point">&gt;</a>
+                            </div>
+                        </div>
+                        <table>
+                            <tbody>
+                            <!-- ko if: !hasRollupStats() -->
+                            <tr>
+                                <td>Time</td>
+                                <td colspan="2" data-bind="text: formattedDate"></td>
+                            </tr>
+                            <tr>
+                                <td>Value</td>
+                                <td colspan="2"><span data-bind="text: formattedYValue"></span> <span data-bind="text: rawYValue"></span></td>
+                            </tr>
+                            <!-- /ko -->
+                            <!-- ko if: hasRollupStats() -->
+                            <tr title="The time range covered by this point">
+                                <td>Time</td>
+                                <td class="text-right" colspan="2" data-bind="text: formattedDateRange"></td>
+                            </tr>
+                            <tr data-bind="css: {highlighted: selectedRollupField() === 'max'}" title="Maximum value">
+                                <td>Max</td>
+                                <td data-bind="text: yFormatter(rollupStatistics().max)"></td>
+                                <td class="text-right" data-bind="text: rollupStatistics().maxTime"></td>
+                            </tr>
+                            <!-- ko if: maxEntityUrl() !== null -->
+                            <tr data-bind="css: {highlighted: selectedRollupField() === 'max'}" title="The entity that reported the maximum value">
+                                <td colspan="3" class="text-right">
+                                    <a target="_blank" data-bind="attr: {href: maxEntityUrl}, text: maxEntityDisplayName"></a>
+                                </td>
+                            </tr>
+                            <!-- /ko -->
+                            <tr data-bind="css: {highlighted: selectedRollupField() === 'mean'}"  title="Mean value">
+                                <td>Mean</td>
+                                <td colspan="2"><span data-bind="text: formattedYValue"></span> <span data-bind="text: rawYValue"></span></td>
+                            </tr>
+                            <tr data-bind="css: {highlighted: selectedRollupField() === 'min'}" title="Minimum value">
+                                <td>Min</td>
+                                <td data-bind="text: yFormatter(rollupStatistics().min)"></td>
+                                <td class="text-right" data-bind="text: rollupStatistics().minTime"></td>
+                            </tr>
+                            <!-- ko if: minEntityUrl() !== null -->
+                            <tr data-bind="css: {highlighted: selectedRollupField() === 'min'}" title="The entity that reported the minimum value">
+                                <td colspan="3" class="text-right">
+                                    <a target="_blank" data-bind="attr: {href: minEntityUrl}, text: minEntityDisplayName"></a>
+                                </td>
+                            </tr>
+                            <!-- /ko -->
+                            <tr title="Standard Deviation">
+                                <td>Standard Deviation</td>
+                                <td colspan="2" data-bind="text: yFormatter(rollupStatistics().stdDev)"></td>
+                            </tr>
+                            <tr title="The number of samples considered while computing statistical values for this point">
+                                <td>Number of Samples</td>
+                                <td colspan="2" data-bind="text: rollupStatistics().count"></td>
+                            </tr>
+                            <!-- /ko -->
+                            <!-- ko if: rollupLevelLabel() !== null -->
+                            <tr title="The amount of data covered by this point. Points represent a single metric sample (raw) or are bundles of statistics computed from samples collected over some period (every 10 minutes, hourly, and so on).">
+                                <td>Data Granularity</td>
+                                <td colspan="2" data-bind="text: rollupLevelLabel"></td>
+                            </tr>
+                            <!-- /ko -->
+                            <!-- ko if: collectionFrequency() !== null -->
+                            <tr title="Estimated collection frequency of the current metric stream">
+                                <td>Collection Frequency</td>
+                                <td colspan="2" data-bind="text: collectionFrequency"></td>
+                            </tr>
+                            <!-- /ko -->
+                            </tbody>
+                        </table>
+                    </div>
+                </script>
+
+                <script type="text/html" id="tmpl-hover-details-attributes">
+                    <!-- ko if: attributes().length > 0 -->
+                    <div class="attributes">
+                        <div class="header">
+                            <h4 data-bind="text: streamAttributesHeader"></h4>
+                        </div>
+                        <table>
+                            <tbody data-bind="foreach: attributes()">
+                            <!-- ko if: visible -->
+                            <tr>
+                                <td data-bind="text: name, attr: {title: description}"></td>
+                                <td>
+                                    <!-- ko if: url === null -->
+                                    <span class="value" data-bind="text: value, attr: {title: valueTitle}"></span>
+                                    <!-- /ko -->
+                                    <!-- ko if: url !== null -->
+                                    <a class="value" target="_blank" data-bind="text: value, attr: {href: url, title: valueTitle}"></a>
+                                    <!-- /ko -->
+                                </td>
+                            </tr>
+                            <!-- /ko -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /ko -->
+                </script>
+
+                <script type="text/html" id="tmpl-hover-details-buttons">
+                    <!-- ko if: entityUrl() !== null || (!isWorkStream() && chartUrl() !== null) -->
+                    <div class="buttons">
+                        <!-- ko if: entityUrl() !== null -->
+                        <a class="btn" target="_blank" data-bind="text: viewEntityButtonLabel, attr: { href:entityUrl }"></a>
+                        <!-- /ko -->
+                        <!-- ko if: !isWorkStream() && chartUrl() !== null -->
+                        <a class="btn" target="_blank" data-bind="attr: { href:chartUrl }">View Entity Chart</a>
+                        <!-- /ko -->
+                    </div>
+                    <!-- /ko -->
+                </script>
+
+                <script type="text/html" id="tmpl-hover-details-chart">
+                    <div class="plot-container"></div>
+                </script>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn dismissButton btn-primary" >Close</button>
+
+
+                <button class="btn back-button" style="display: none;">
+                    <i class="icon-chevron-left"></i> Back
+                    <i class="cui-spinner charts-result-spinner" style="display: none"></i>
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        require([
+            "cloudera/common/ModalDialogBase"
+        ], function(ModalDialogBase) {
+            jQuery(function($) {
+                var $modal = $("#largePlotDialog");
+                var options = {
+                    topLevelModal: false,
+                    defaultVisible: false,
+                    destroyOnClose: false,
+                    focusFooterButton: true,
+                    backdrop: 'true',
+                    primaryActionOnEnterKey: true
+                };
+                $modal.ModalDialogBase(options);
+            });
+        });
+    </script>
+
+
+
+
+
+
+</div>
+
+
+<div class="PageTitle">
+
+    <div class="nowrap pull-right buttonbar">
+        <a
+
+
+                href="/cmf/express-wizard/welcome"
+                class=" btn">
+            Add Cluster</a>
+
+
+
+    </div>
+
+
+    <ul class="inlineBlock nav nav-tabs">
+
+
+        <li role="presentation" class="active">
+
+            <a data-event-category="Home Menu" data-event="Status" role="menuitem"
+
+
+               href="/cmf/home"
+               class="home-status">
+                Status</a>
+
+
+        </li>
+
+
+
+
+        <li role="presentation" >
+
+            <a data-event-category="Home Menu" data-event="All Health Issues" role="menuitem"
+
+
+               href="/cmf/allHealthIssues"
+               class="health-menu-tab">
+                All Health Issues</a>
+
+
+        </li>
+
+
+
+
+        <li role="presentation" class="dropdown "
+
+        >
+            <a href="#" aria-haspopup="true" class="configuration-menu-tab  dropdown-toggle" data-toggle="dropdown">
+
+                <span class="dropdown-text">Configuration</span> <b aria-hidden="true" class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+
+
+
+
+                <li ><a data-event-category="Home Menu" data-event="Configuration Issues" role="menuitem"
+
+
+                        href="/cmf/allConfigurationIssues"
+                        class="configuration-menu-tab">
+                    Configuration Issues</a>
+                </li>
+
+
+
+
+
+                <li class="divider"></li>
+
+
+
+
+
+                <li ><a role="menuitem"
+
+
+                        href="/cmf/config2?task=ALL_DATABASES"
+                >
+                    Database Settings</a>
+                </li>
+
+
+
+
+
+                <li ><a role="menuitem"
+
+
+                        href="/cmf/config2?task=ALL_DISK_SPACE_THRESHOLDS"
+                >
+                    Disk Space Thresholds</a>
+                </li>
+
+
+
+
+
+                <li ><a role="menuitem"
+
+
+                        href="/cmf/config2?task=ALL_LOCAL_DATA_DIRS_AND_FILES"
+                >
+                    Local Data Directories and Files</a>
+                </li>
+
+
+
+
+
+                <li ><a role="menuitem"
+
+
+                        href="/cmf/config2?task=ALL_LOG_DIRECTORIES"
+                >
+                    Log Directories</a>
+                </li>
+
+
+
+
+
+                <li ><a role="menuitem"
+
+
+                        href="/cmf/config2?task=ALL_NAVIGATOR"
+                >
+                    Navigator Settings</a>
+                </li>
+
+
+
+
+
+                <li ><a role="menuitem"
+
+
+                        href="/cmf/config2?task=ALL_PORT_CONFIGURATIONS"
+                >
+                    Ports</a>
+                </li>
+
+
+
+
+
+                <li ><a role="menuitem"
+
+
+                        href="/cmf/config2?task=ALL_SUPPRESSED_NOTIFICATIONS"
+                >
+                    Suppressed Health and Configuration Issues</a>
+                </li>
+
+
+
+
+
+                <li class="divider"></li>
+
+
+
+
+
+                <li ><a role="menuitem"
+
+
+                        href="/cmf/config2?task=ALL_NON_DEFAULT_VALUES"
+                >
+                    Non-default Values</a>
+                </li>
+
+
+
+
+
+                <li ><a role="menuitem"
+
+
+                        href="/cmf/config2?task=ALL_NON_UNIFORM_VALUES"
+                >
+                    Non-uniform Values</a>
+                </li>
+
+
+
+
+
+                <li ><a role="menuitem"
+
+
+                        href="/cmf/config2?task=ALL_SAFETY_VALVES"
+                >
+                    Advanced Configuration Snippets</a>
+                </li>
+
+
+
+            </ul>
+
+
+        </li>
+
+
+
+
+        <li role="presentation" >
+
+            <a data-event-category="Home Menu" data-event="All Recent Commands" role="menuitem"
+
+
+               href="/cmf/commands/commands"
+               class="commands-menu-tab">
+                All Recent Commands</a>
+
+
+        </li>
+
+
+
+    </ul>
+
+
+</div>
+
+
+<div class="cui-dashboard">
+    <div class="alignRight">
+
+
+        <a href="/cmf/license/settings" class="showTooltip btn btn-link" title="Cloudera Enterprise Data Hub Edition provides important features that help you manage and monitor your Hadoop clusters in mission-critical environments.">Try Cloudera Enterprise Data Hub Edition for 60 Days</a>
+
+
+    </div>
+
+    <div class="alert alert-block failed-messages-container" style="display: none">
+        <p class="using-embedded-db-warning-message" style="display: none">
+            You are running Cloudera Manager in non-production mode, which uses an embedded PostgreSQL database. Switch to using a supported external database before moving into production. <a href="http://tiny.cloudera.com/cm_db_config-5" target="_blank">More Details <i class="externalLink"></i></a>
+        </p>
+
+        <p class="smon-request-failed-message" style="display: none">
+            Request to the <b>Service Monitor</b> failed. This may cause slow page responses. <a href="/cmf/services/2/instances/7/status">View the status of the Service Monitor.</a>
+        </p>
+
+        <p class="hmon-request-failed-message" style="display: none">
+            Request to the <b>Host Monitor</b> failed. This may cause slow page responses. <a href="/cmf/services/2/instances/5/status">View the status of the Host Monitor.</a>
+        </p>
+    </div>
+
+    <div class="status-and-charts row-fluid">
+        <div class="status-pane">
+            <section id="statusPane" class="status-section">
+                <div id="statusPaneContent"></div>
+            </section>
+
+            <div tabindex="-1"
+
+                 class="modal modal-xl hide" style="display:none"
+
+
+
+                 id="configIssuesPopup">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <button type="button" class="close"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                        <h2 class="modal-title"><span data-bind="text: title"></span>: Configuration Issues
+                            <small><!-- ko template: {name: 'template-config-issues-filter'} --><!-- /ko --></small>
+                        </h2>
+
+                    </div>
+                    <div class="modal-body ">
+                        <script type="text/html" id="template-suppress-modal"><div tabindex="-1"
+
+                        class="modal modal-lg hide" style="display:none"
+
+
+                        data-top-level-modal="true"
+
+
+                        data-bind="showModal: modalNotification"
+
+                        id="modalDialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                                <h2 class="modal-title"><!-- ko ifnot: configSuppressed -->
+
+                                    Suppress Configuration Validation
+                                    <!-- /ko -->
+                                    <!-- ko if: configSuppressed -->
+
+                                    Unsuppress Configuration Validation
+                                    <!-- /ko -->
+                                </h2>
+
+                            </div>
+                            <div class="modal-body ">
+                                <form class="form-horizontal">
+                                    <div class="control-group">
+                                        <label class="control-label">
+
+                                            Validation
+                                        </label>
+                                        <div class="controls">
+                                            <div class="form-control-static-float" data-bind="text: suppressionConfig.displayName"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group" data-bind="visible: !_.isEmpty(message)">
+                                        <label class="control-label">
+                                            Current Message
+                                        </label>
+                                        <div class="controls">
+                                            <div class="form-control-static-float" data-bind="text: message"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group" data-bind="visible: !configSuppressed()" style="display: none;">
+                                        <label class="control-label">
+                                            Suppress For
+                                        </label>
+                                        <div class="controls">
+                                            <div class="form-control-static-float" data-bind="text: suppressionConfig.configDetails.label"></div>
+                                            <!-- ko if: hasContainerConfig -->
+                                            <label class="checkbox field-label "><input type="checkbox" data-bind="checked: suppressForContainer"/>Suppress For <!-- ko text: suppressionConfig.containerConfigDetails.label --><!-- /ko --></label>
+                                            <!-- /ko -->
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group" data-bind="visible: configSuppressed" style="display: none;">
+                                        <label class="control-label">
+                                            Unsuppress For
+                                        </label>
+                                        <div class="controls">
+                                            <!-- ko if: !hasContainerConfig || !suppressionConfig.containerConfigDetails.value() -->
+                                            <div class="form-control-static-float" data-bind="text: suppressionConfig.configDetails.label"></div>
+                                            <!-- /ko -->
+                                            <!-- ko if: hasContainerConfig && suppressionConfig.containerConfigDetails.value() -->
+                                            <div class="form-control-static-float" data-bind="text: suppressionConfig.containerConfigDetails.label"></div>
+                                            <!-- /ko -->
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Comment
+                                        </label>
+                                        <div class="controls">
+                                            <textarea rows="3" data-bind="textInput: comment" class="input-block-level"></textarea>
+                                        </div>
+                                    </div>
+                                </form>
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <div class="pull-left" data-bind="spinner: { spin: loading, size: 'large' }"></div>
+                                <div class="pull-right override-buttons">
+                                    <button class="btn btn-link" data-bind="click: onSuppressionModalClose">Cancel</button>
+                                    <button class="btn btn-primary" data-bind="click: onSuppressionModalOk">Confirm</button>
+                                </div>
+
+                            </div>
+                        </div>
+                        </div>
+
+
+                        </script>
+
+
+
+
+
+
+                        <script type="text/html" id="template-config-issues-filter">
+                            <!-- ko if: warnLevelCount() !== 0 && errorLevelCount() !== 0 -->
+                            <a href="#" data-bind="click: toggleAllShown, text: showOtherMessage, visible: !allShown()"></a>
+                            <a href="#" data-bind="click: toggleAllShown, text: hideOtherMessage, visible: allShown()"></a>
+                            <!-- /ko -->
+                            <div data-bind="fadeVisible: { value: hasSuppressions, speed: 'normal' }, visible: hasSuppressions" class="suppressed-toggle" style="display:none;">
+                                <a href="#" data-bind="click: toggleShowingSuppressed, text: showSuppressedMessage, visible: !showingSuppressed()"></a>
+                                <a href="#" data-bind="click: toggleShowingSuppressed, visible: showingSuppressed">Hide Suppressed Warnings</a>
+                            </div>
+                        </script>
+
+                        <script type="text/html" id="template-config-issues-table">
+                            <ul class="issues-list config-issues-list" data-bind="visible: !$parent.isCollapsed(key)">
+                                <!-- ko template: {name: 'template-config-issues-value', foreach: values} --><!-- /ko -->
+                            </ul>
+                        </script>
+
+                        <script type="text/html" id="template-config-issues-value">
+                            <!-- ko if: !suppressed() || $root.showingSuppressed() -->
+                            <li class="actionable">
+                                <!-- ko if: level === 'ERROR' -->
+                                <span><i  class="showTooltip tiny cm-icon cm-icon-status-bad-health"></i></span>
+
+                                <!-- /ko -->
+                                <!-- ko if: level === 'WARN' -->
+                                <span><i  class="showTooltip tiny cm-icon cm-icon-status-concerning-health"></i></span>
+
+                                <!-- /ko -->
+                                <i class="glyphicon icon-eye-close" data-bind="visible: suppressed" title="Suppressed"></i>
+
+                                <!-- ko if: metadata.entityType === 'SERVICE' -->
+                                <i aria-hidden="true" data-bind="attr: {class: 'serviceIcon ' + metadata.serviceType + 'ServiceIcon'}"></i><span data-bind="text: metadata.serviceDisplayName"></span>:
+                                <!-- ko template: {name: 'template-config-issues-message'} --><!-- /ko -->
+                                <!-- /ko -->
+
+                                <!-- ko if: metadata.entityType === 'ROLE' -->
+                                <i aria-hidden="true" data-bind="attr: {class: 'serviceIcon ' + metadata.serviceType + 'ServiceIcon'}"></i><span data-bind="text: metadata.roleDisplayName"></span>:
+                                <!-- ko template: {name: 'template-config-issues-message'} --><!-- /ko -->
+                                <!-- /ko -->
+
+                                <!-- ko if: metadata.entityType === 'HOST' -->
+                                <i aria-hidden="true" class="icon-th-list"></i> <span data-bind="text: metadata.hostName"></span>:
+                                <!-- ko template: {name: 'template-config-issues-message'} --><!-- /ko -->
+                                <!-- /ko -->
+
+                                <!-- ko if: metadata.entityType === 'GLOBAL' -->
+                                <i aria-hidden="true" class="icon-globe"></i> <!-- ko template: {name: 'template-config-issues-message'} --><!-- /ko -->
+                                <!-- /ko -->
+
+                                <!-- ko if: metadata.entityType === 'CLUSTER' -->
+                                <!-- ko template: {name: 'template-config-issues-message'} --><!-- /ko -->
+                                <!-- /ko -->
+
+                                <!-- ko if: metadata.entityType === 'ROLE_CONFIG_GROUP' -->
+                                <i aria-hidden="true" data-bind="attr: {class: 'serviceIcon ' + metadata.serviceType + 'ServiceIcon'}"></i><span data-bind="text: metadata.serviceDisplayName"></span>:
+                                <!-- ko template: {name: 'template-config-issues-message'} --><!-- /ko -->
+                                <!-- /ko -->
+                            </li>
+                            <!-- /ko -->
+                        </script>
+
+                        <script type="text/html" id="template-config-issues-message">
+                            <span data-bind="visible: message, text: message"></span>
+                            <ko-link params="link: link"></ko-link>
+                            <div class="notification-controls" data-bind="component: { name: 'ko-notification-controls', params: { notification: $data, instantSuppression: true } }"></div>
+                            <div class="details" data-bind="text: details"></div>
+                        </script>
+
+                        <script type="text/html" id="template-config-issues-no-results">
+                            <h3 data-bind="visible: isNoResults()" style="display: none">
+                                No Configuration Issues
+                            </h3>
+                        </script>
+
+
+                        <!-- ko template: {name: 'template-config-issues-no-results'} --><!-- /ko -->
+
+                        <div data-bind="visible: !isNoResults()" style="display: none">
+                            <!-- ko if: enabled -->
+                            <!-- ko foreach: actionablesBySelectedGroup -->
+                            <!-- ko template: {name: 'template-config-issues-table'} --><!-- /ko -->
+                            <!-- /ko -->
+                            <!-- /ko -->
+                        </div>
+
+                        <script type="text/javascript">
+                            require([
+                                'cloudera/cmf/include/ConfigIssues'
+                            ], function(ConfigIssues) {
+                                jQuery(function($) {
+                                    var options = {
+                                        groupBy: "serviceDisplayName",
+                                        container: "#configIssuesPopup",
+                                        mgmtClusterName: "Cloudera Management Service",
+                                        displayLimit: 100,
+                                        dialogMode: true
+                                    };
+                                    var module = new ConfigIssues(options);
+                                    module.applyBindings();
+                                    module.enabled(false);
+
+                                    $(options.container).on('shown', function(e){
+                                        if (e.target.id === "configIssuesPopup") {
+                                            module.enabled(true);
+                                        }
+                                    });
+
+                                    $(options.container).on('hide', function(e){
+                                        if (e.target.id === "configIssuesPopup") {
+                                            module.enabled(false);
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn dismissButton btn-primary" >Close</button>
+
+
+
+                    </div>
+                </div>
+            </div>
+
+
+            <script type="text/javascript">
+                require([
+                    "cloudera/common/ModalDialogBase"
+                ], function(ModalDialogBase) {
+                    jQuery(function($) {
+                        var $modal = $("#configIssuesPopup");
+                        var options = {
+                            topLevelModal: false,
+                            defaultVisible: false,
+                            destroyOnClose: false,
+                            focusFooterButton: true,
+                            backdrop: 'true',
+                            primaryActionOnEnterKey: true
+                        };
+                        $modal.ModalDialogBase(options);
+                    });
+                });
+            </script>
+
+
+
+
+
+            <div tabindex="-1"
+
+                 class="modal  hide" style="display:none"
+
+
+
+                 id="healthIssuesPopup">
+                <div class="modal-content">
+                    <div class="modal-header">
+
+                        <button type="button" class="close"  aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                        <h2 class="modal-title"><span data-bind="text: title"></span>: Health Issues
+                        </h2>
+
+                    </div>
+                    <div class="modal-body ">
+                        <script type="text/html" id="template-suppress-modal"><div tabindex="-1"
+
+                        class="modal modal-lg hide" style="display:none"
+
+
+                        data-top-level-modal="true"
+
+
+                        data-bind="showModal: modalNotification"
+
+                        id="modalDialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
+                                <h2 class="modal-title"><!-- ko ifnot: configSuppressed -->
+
+                                    <!-- ko if: isTrigger -->Suppress Trigger<!-- /ko -->
+                                    <!-- ko ifnot: isTrigger -->Suppress Health Test<!-- /ko -->
+
+
+                                    <!-- /ko -->
+                                    <!-- ko if: configSuppressed -->
+
+                                    <!-- ko if: isTrigger -->Unsuppress Trigger<!-- /ko -->
+                                    <!-- ko ifnot: isTrigger -->Unsuppress Health Test<!-- /ko -->
+
+
+                                    <!-- /ko -->
+                                </h2>
+
+                            </div>
+                            <div class="modal-body ">
+                                <form class="form-horizontal">
+                                    <div class="control-group">
+                                        <label class="control-label">
+
+                                            <!-- ko if: isTrigger -->Trigger<!-- /ko -->
+                                            <!-- ko ifnot: isTrigger -->Health Test<!-- /ko -->
+
+
+                                        </label>
+                                        <div class="controls">
+                                            <div class="form-control-static-float" data-bind="text: suppressionConfig.displayName"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group" data-bind="visible: !_.isEmpty(message)">
+                                        <label class="control-label">
+                                            Current Message
+                                        </label>
+                                        <div class="controls">
+                                            <div class="form-control-static-float" data-bind="text: message"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group" data-bind="visible: !configSuppressed()" style="display: none;">
+                                        <label class="control-label">
+                                            Suppress For
+                                        </label>
+                                        <div class="controls">
+                                            <div class="form-control-static-float" data-bind="text: suppressionConfig.configDetails.label"></div>
+                                            <!-- ko if: hasContainerConfig -->
+                                            <label class="checkbox field-label "><input type="checkbox" data-bind="checked: suppressForContainer"/>Suppress For <!-- ko text: suppressionConfig.containerConfigDetails.label --><!-- /ko --></label>
+                                            <!-- /ko -->
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group" data-bind="visible: configSuppressed" style="display: none;">
+                                        <label class="control-label">
+                                            Unsuppress For
+                                        </label>
+                                        <div class="controls">
+                                            <!-- ko if: !hasContainerConfig || !suppressionConfig.containerConfigDetails.value() -->
+                                            <div class="form-control-static-float" data-bind="text: suppressionConfig.configDetails.label"></div>
+                                            <!-- /ko -->
+                                            <!-- ko if: hasContainerConfig && suppressionConfig.containerConfigDetails.value() -->
+                                            <div class="form-control-static-float" data-bind="text: suppressionConfig.containerConfigDetails.label"></div>
+                                            <!-- /ko -->
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label class="control-label">
+                                            Comment
+                                        </label>
+                                        <div class="controls">
+                                            <textarea rows="3" data-bind="textInput: comment" class="input-block-level"></textarea>
+                                        </div>
+                                    </div>
+                                </form>
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <div class="pull-left" data-bind="spinner: { spin: loading, size: 'large' }"></div>
+                                <div class="pull-right override-buttons">
+                                    <button class="btn btn-link" data-bind="click: onSuppressionModalClose">Cancel</button>
+                                    <button class="btn btn-primary" data-bind="click: onSuppressionModalOk">Confirm</button>
+                                </div>
+
+                            </div>
+                        </div>
+                        </div>
+
+
+                        </script>
+
+
+
+
+
+
+                        <script type="text/html" id="template-health-issues-filter">
+                            <!-- ko if: redLevelCount() !== 0 && yellowLevelCount() !== 0 && !showingSuppressed() -->
+                            <div class="health-filter-toggle">
+                                <a href="#" data-bind="click: toggleAllShown, text: showOtherMessage, visible: !allShown()"></a>
+                                <a href="#" data-bind="click: toggleAllShown, text: hideOtherMessage, visible: allShown()"></a>
+                            </div>
+                            <!-- /ko -->
+                            <div data-bind="fadeVisible: { value: hasSuppressions, speed: 'normal' }, visible: hasSuppressions" class="suppressed-toggle" style="display:none;">
+                                <a href="#" data-bind="click: toggleShowingSuppressed, text: showSuppressedMessage, visible: !showingSuppressed()"></a>
+                                <a href="#" data-bind="click: toggleShowingSuppressed, visible: showingSuppressed">Hide Suppressed Tests</a>
+                            </div>
+                        </script>
+
+                        <script type="text/html" id="template-health-issues-view">
+                            <div class="btn-group inlineBlock">
+                                <!-- ko if: redLevelCount() !== 0 || yellowLevelCount() !== 0 -->
+                                <button class="btn showTooltip"
+                                        data-bind="css: {active: view() === 'ENTITY'}, click: setViewToEntity"
+                                        title="Groups the health issues by entity. Each item is a unique service, role or host with one or more health issues.">
+                                    Organize By Entity
+                                </button>
+                                <button class="btn showTooltip"
+                                        data-bind="css: {active: view() === 'CHECK'}, click: setViewToCheck"
+                                        title="Groups the health issues by health test. Each item is a unique health test affecting one or more entities.">
+                                    Organize By Health Test
+                                </button>
+                                <!-- /ko -->
+                            </div>
+                        </script>
+
+                        <script type="text/html" id="template-health-issues-check-list">
+                            <ul class="issues-list health-issues-check-list" data-bind="visible: showChecks()">
+                                <!-- ko template: {name: 'template-health-issues-check', foreach: unhealthyCheckRows} -->
+                                <!-- /ko -->
+                                <!-- ko if: unhealthyCheckRows().length < totalUnhealthyChecks() -->
+                                <li class="bold"><span data-bind="text: notShownString"></span></li>
+                                <!-- /ko -->
+                            </ul>
+                        </script>
+
+                        <script type="text/html" id="template-health-issues-entity-list">
+                            <ul class="issues-list health-issues-entity-list" data-bind="visible: !$parent.isClusterCollapsed(clusterName)">
+                                <!-- ko if: entityTypeToEntries.SERVICE -->
+                                <!-- ko template: {name: 'template-health-issues-entity', foreach: entityTypeToEntries.SERVICE} -->
+                                <!-- /ko -->
+                                <!-- ko if: entityTypeToEntries.SERVICE.length < entityTypeToTotalUnhealthy.SERVICE -->
+                                <li><span data-bind="text: notShownString('SERVICE')"></span></li>
+                                <!-- /ko -->
+                                <!-- /ko -->
+                                <!-- ko if: entityTypeToEntries.ROLE -->
+                                <!-- ko template: {name: 'template-health-issues-entity', foreach: entityTypeToEntries.ROLE} -->
+                                <!-- /ko -->
+                                <!-- ko if: entityTypeToEntries.ROLE.length < entityTypeToTotalUnhealthy.ROLE -->
+                                <li><span data-bind="text: notShownString('ROLE')"></span></li>
+                                <!-- /ko -->
+                                <!-- /ko -->
+                                <!-- ko if: entityTypeToEntries.HOST -->
+                                <!-- ko template: {name: 'template-health-issues-entity', foreach: entityTypeToEntries.HOST} -->
+                                <!-- /ko -->
+                                <!-- ko if: entityTypeToEntries.HOST.length < entityTypeToTotalUnhealthy.HOST -->
+                                <li><span data-bind="text: notShownString('HOST')"></span></li>
+                                <!-- /ko -->
+                                <!-- /ko -->
+                            </ul>
+                        </script>
+
+                        <script type="text/html" id="template-health-issues-entity">
+                            <li data-bind="visible: !allSuppressed() || $root.showingSuppressed()">
+        <span class="entity-name">
+          <span data-bind="template: {name: 'template-health-issues-level', data: $data}"></span>
+          <a data-bind="text: name, attr: {href: entityStatusPageURL}"></a>
+        </span>
+
+                                <!-- ko if: extraLinks.length -->
+                                <div class="btn-group inlineBlock">
+                                    <a href="#" aria-haspopup="true" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+                                        <span class="dropdown-text">Log Files</span> <b aria-hidden="true" class="caret"></b>
+                                    </a>
+                                    <ul class="dropdown-menu pull-right" role="menu">
+                                        <!-- ko foreach: extraLinks -->
+                                        <li data-bind="safeHTML: $data"></li>
+                                        <!-- /ko -->
+                                    </ul>
+                                </div>
+                                <!-- /ko -->
+
+                                <ul class="details unstyled" data-bind="foreach: unhealthyChecks">
+                                    <li data-bind="visible: !suppressed() || $root.showingSuppressed()">
+                                        <span data-bind="template: {name: 'template-health-issues-level', data: $data}"></span>
+                                        <i class="glyphicon icon-eye-close tiny" data-bind="visible: suppressed" title="Suppressed"></i>
+                                        <!-- ko if: entityType === 'SERVICE' -->
+                                        <a data-timemarker="" data-bind="href: '/cmf/services/' + entityId + '/checkDetails?timestamp=0&currentMode=true&healthTestName=' + testIdentifier, text:name"></a>
+                                        <!-- /ko -->
+                                        <!-- ko if: entityType === 'HOST' -->
+                                        <a data-timemarker="" data-bind="href: '/cmf/hardware/hosts/' + entityId + '/checkDetails?timestamp=0&currentMode=true&healthTestName=' + testIdentifier, text:name"></a>
+                                        <!-- /ko -->
+                                        <!-- ko if: entityType === 'ROLE' -->
+                                        <a data-timemarker="" data-bind="href: '/cmf/services/0/instances/' + entityId + '/checkDetails?timestamp=0&currentMode=true&healthTestName=' + testIdentifier, text:name"></a>
+                                        <!-- /ko -->
+                                        <div class="notification-controls" data-bind="component: {name: 'ko-notification-controls', params: { notification: $data } }"></div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </script>
+
+                        <script type="text/html" id="template-health-issues-check">
+                            <li class="wrap">
+                                <span data-bind="template: {name: 'template-health-issues-level', data: $data}"></span>
+                                <!-- ko if: entities.length === 1 -->
+                                <a data-bind="attr: {href : entities[0].entityStatusPageURL, title: entities[0].name} ">
+                                    <span data-bind="text: number"></span>
+                                    <span data-bind="text: name"></span>
+                                </a>
+                                <!-- /ko -->
+                                <!-- ko ifnot: entities.length === 1 -->
+                                <a href="#" data-bind="click: showCheckDetailsPopup">
+                                    <span data-bind="text: number"></span>
+                                    <span data-bind="text: name"></span>
+                                </a>
+                                <!-- /ko -->
+                            </li>
+                        </script>
+
+                        <script type="text/html" id="template-health-issues-level">
+                            <!-- ko if: health === 'RED' -->
+                            <span><i title="Bad Health" class="showTooltip tiny cm-icon cm-icon-status-bad-health"></i></span>
+
+                            <!-- /ko -->
+                            <!-- ko if: health === 'YELLOW' -->
+                            <span><i title="Concerning Health" class="showTooltip tiny cm-icon cm-icon-status-concerning-health"></i></span>
+
+                            <!-- /ko -->
+                        </script>
+
+                        <script type="text/html" id="template-health-issues-no-results">
+                            <h3 data-bind="visible: isNoResults()" style="display: none">
+                                No Health Issues
+                            </h3>
+                        </script>
+
+
+                        <!-- ko template: {name: 'template-health-issues-filter'} --><!-- /ko -->
+                        <!-- ko template: {name: 'template-health-issues-no-results'} --><!-- /ko -->
+
+                        <!-- ko if: enabled -->
+                        <!-- ko foreach: unhealthyEntitySections -->
+                        <!-- ko template: {name: 'template-health-issues-entity-list'} --><!-- /ko -->
+                        <!-- /ko -->
+                        <!-- /ko -->
+
+                        <script type="text/javascript">
+                            require([
+                                'cloudera/cmf/include/HealthIssues'
+                            ], function(HealthIssues) {
+                                jQuery(function($) {
+                                    var options = {
+                                        displayLimit: 20,
+                                        mgmtClusterName: "Cloudera Management Service",
+                                        container: "#healthIssuesPopup"
+                                    };
+                                    var module = new HealthIssues(options);
+                                    module.applyBindings();
+                                    module.enabled(false);
+
+                                    $(options.container).on('shown', function(e){
+                                        if (e.target.id === "healthIssuesPopup") {
+                                            module.enabled(true);
+                                        }
+                                    });
+
+                                    $(options.container).on('hide', function(e){
+                                        if (e.target.id === "healthIssuesPopup") {
+                                            module.enabled(false);
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn dismissButton btn-primary" >Close</button>
+
+
+
+                    </div>
+                </div>
+            </div>
+
+
+            <script type="text/javascript">
+                require([
+                    "cloudera/common/ModalDialogBase"
+                ], function(ModalDialogBase) {
+                    jQuery(function($) {
+                        var $modal = $("#healthIssuesPopup");
+                        var options = {
+                            topLevelModal: false,
+                            defaultVisible: false,
+                            destroyOnClose: false,
+                            focusFooterButton: true,
+                            backdrop: 'true',
+                            primaryActionOnEnterKey: true
+                        };
+                        $modal.ModalDialogBase(options);
+                    });
+                });
+            </script>
+
+
+
+
+
+
+            <script type="text/javascript">
+                require([
+                    "cloudera/cmf/page/LandingPageStatus"
+                ], function(LandingPageStatus) {
+                    jQuery(function($){
+                        var options = {
+                            containerSelector: "#statusPane",
+                            contentSelector: "#statusPaneContent",
+                            currentMode: true,
+                            ajaxURL: "services/landingPageStatusContent",
+                            smonRequestFailedSelector: ".smon-request-failed-message",
+                            hmonRequestFailedSelector: ".hmon-request-failed-message",
+                            embeddedDbWarningSelector: ".using-embedded-db-warning-message",
+                            enableEmbeddedDBCheck: true,
+                            failedMessagesSelector: ".failed-messages-container"
+                        };
+                        var page = new LandingPageStatus(options);
+                    });
+                });
+            </script>
+
+        </div>
+        <div class="charts-pane cui-paper">
+            <div class="pull-right">
+                <div class="btn-group inlineBlock add-charts-dropdown">
+                    <button class="btn btn-mini dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon tiny edit"></i> <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu flexible-layout">
+
+                        <li><a href="?defaultView=true">Default</a></li>
+                        <li class="nav-header"><span>Custom <i class="icon-ok"></i></span></li>
+
+                        <li><a href="#" class="reset-status-view">Reset Content</a></li>
+                        <li class="divider"></li>
+                        <li class="nav-header static"><span>Reposition charts to fit to window</span> <i class="icon-ok"></i></li>
+                        <li class="static">
+                            <a href="#" class="toggle-flexible-layout">
+                                Preserve chart positions
+                            </a>
+                        </li>
+                        <li class="flexible">
+                            <a href="#" class="toggle-flexible-layout">
+                                Reposition charts to fit to window
+                            </a>
+                        </li>
+                        <li class="nav-header flexible"><span>Preserve chart positions</span> <i class="icon-ok"></i></li>
+                        <li><a href="#" class="reset-status-view-layout">Reset Layout</a></li>
+                        <li class="divider"></li>
+                        <li>
+                            <a
+
+
+                                    href="/cmf/views/search?returnUrl=%2Fcmf%2Fhome&amp;mode=add&amp;viewName=HOME_PAGE_VIEW&amp;context=%7B%7D"
+                            >
+                                Add From Chart Builder</a>
+
+                        </li>
+
+
+                    </ul>
+                </div>
+
+                <script type="text/javascript">
+                    require([
+                        "cloudera/cmf/include/ChartControls"
+                    ], function(ChartControls) {
+                        jQuery(function($) {
+                            var options = {
+                                resetButtonSelector: ".reset-status-view",
+                                resetUrl: "/cmf/views/remove?viewName=HOME_PAGE_VIEW"
+                            };
+                            var module = new ChartControls(options);
+                        });
+                    });
+                </script>
+
+            </div>
+            <div class="pull-right">
+                <ul class="nav-pills unstyled" id="cmsTimeRangeSelection">
+                    <li><a href="#" title="Last 30 Minutes" data-minutes="30">30m</a></li>
+                    <li><a href="#" title="Last 1 Hour" data-minutes="60">1h</a></li>
+                    <li><a href="#" title="Last 2 Hours" data-minutes="120">2h</a></li>
+                    <li><a href="#" title="Last 6 Hours" data-minutes="360">6h</a></li>
+                    <li><a href="#" title="Last 12 Hours" data-minutes="720">12h</a></li>
+                    <li><a href="#" title="Last 1 Day" data-minutes="1440">1d</a></li>
+                    <li><a href="#" title="Last 1 Week" data-minutes="10080">7d</a></li>
+                    <li><a href="#" title="Last 1 Month" data-minutes="43200">30d</a></li>
+                </ul>
+
+            </div>
+            <h2>Charts <i class="charts-result-spinner IconSpinner16x16" style="display: none"></i></h2>
+
+            <div class="chart-feedback">
+                <div class="query-feedback query-errors alert alert-error alert-block">
+                    <ul class="feedback-list"></ul>
+                </div>
+                <div class="query-feedback query-warnings alert alert-block">
+                    <ul class="feedback-list"></ul>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                require([
+                    "cloudera/cmf/charts/QueryFeedback"
+                ], function(QueryFeedback) {
+                    jQuery(function() {
+                        var errors = new QueryFeedback({
+                            container: ".chart-feedback .query-errors",
+                            message: "chartErrorsChanged",
+                        });
+                        var warnings = new QueryFeedback({
+                            container: ".chart-feedback .query-warnings",
+                            message: "chartWarningsChanged",
+                        });
+                    });
+                });
+            </script>
+
+            <section class="chart-section">
+                <link type="text/css" rel="stylesheet" property="stylesheet" href="/static/cms/css/chart.css?v=5.11.0">
+
+
+
+
+                <div class="gridster">
+
+
+                    <div id="charts-view-id"></div>
+
+
+                </div>
+
+
+                <script type="text/javascript">
+                    require([
+                        "cloudera/cmf/view/ViewContainer",
+
+                        "gridster",
+
+                        "_"
+                    ], function(ViewContainer) {
+                        jQuery(function($) {
+                            var id = "charts-view-id";
+                            var view = {"flexibleLayout":true,"name":"HOME_PAGE_VIEW","suppressWarnings":true,"userCreated":false,"version":2,"viewPlots":[{"plot":{"chartType":"line","errorStyle":"auto","expandRange":false,"facetting":"__single_plot__","hideIfNoSeries":false,"interpolation":"linear","mustUseDesiredRollup":false,"scale":"linear","showDescription":false,"title":"Cluster CPU","titleResourceId":"message.plot.landing_page_cpu.title","tsquery":"select cpu_percent_across_hosts where category = CLUSTER","ymax":100.0,"ymin":0.0}},{"plot":{"chartType":"stackarea","errorStyle":"auto","expandRange":false,"facetting":"__single_plot__","hideIfNoSeries":false,"interpolation":"linear","mustUseDesiredRollup":false,"scale":"linear","showDescription":false,"title":"Cluster Disk IO","titleResourceId":"message.plot.landing_page_disk_io.title","tsquery":"select total_read_bytes_rate_across_disks, total_write_bytes_rate_across_disks where category = CLUSTER"}},{"plot":{"chartType":"line","errorStyle":"auto","expandRange":false,"facetting":"__single_plot__","hideIfNoSeries":false,"interpolation":"linear","mustUseDesiredRollup":false,"scale":"linear","showDescription":false,"title":"Cluster Network IO","titleResourceId":"message.plot.landing_page_network_io.title","tsquery":"select total_bytes_receive_rate_across_network_interfaces, total_bytes_transmit_rate_across_network_interfaces where category = CLUSTER"}},{"plot":{"chartType":"stackarea","errorStyle":"auto","expandRange":false,"facetting":"__single_plot__","hideIfNoSeries":true,"interpolation":"linear","mustUseDesiredRollup":false,"scale":"linear","showDescription":false,"title":"HDFS IO","titleResourceId":"message.plot.landing_page_hdfs_io.title","tsquery":"select total_bytes_read_rate_across_datanodes, total_bytes_written_rate_across_datanodes where category = SERVICE and serviceType = HDFS"}},{"plot":{"chartType":"stackarea","errorStyle":"auto","expandRange":false,"facetting":"__single_plot__","hideIfNoSeries":true,"interpolation":"linear","mustUseDesiredRollup":false,"scale":"linear","showDescription":false,"title":"Running MapReduce Jobs","titleResourceId":"message.plot.landing_page_mapreduce_running_jobs.title","tsquery":"select jobs_running where category = SERVICE and serviceType = MAPREDUCE"}},{"plot":{"chartType":"stackarea","errorStyle":"auto","expandRange":false,"facetting":"__single_plot__","hideIfNoSeries":true,"interpolation":"linear","mustUseDesiredRollup":false,"scale":"linear","showDescription":false,"title":"Completed Impala Queries","titleResourceId":"message.plot.landing_page_completed_impala_queries.title","tsquery":"select total_num_queries_rate_across_impalads where category = SERVICE and serviceType = IMPALA"}}]};
+                            view.displayName = "HOME_PAGE_VIEW";
+
+                            var options = {
+                                container: "#" + id,
+                                view: view,
+
+                                context: {},
+
+                                enableEditing: true,
+                                enableRemoving: true,
+                                enableExporting: true,
+                                enableEnlarging: true,
+                                enableLoadAll: true,
+                                enableTriggers: false,
+                                enableGridLayout: true,
+                                showDescription: false,
+                                toggleFilteredStreamsButton: "",
+
+                                resetLayoutButton: ".reset-status-view-layout",
+
+
+                                toggleFlexibleLayoutButton: ".toggle-flexible-layout",
+
+                                showFilteredStreams: false
+                            };
+                            var module = new ViewContainer(options);
+                        });
+                    });
+                </script>
+
+            </section>
+
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        require([
+            'cloudera/cmf/page/MenuStatusSummary'
+        ], function(MenuStatusSummary) {
+            jQuery(function($) {
+                new MenuStatusSummary({
+                    container: ".PageTitle .nav-tabs",
+                    topLevelSummaryUrl: "/cmf/services/topLevelSummary",
+                    updateIntervalInMS: 10000
+                });
+            });
+        });
+    </script>
+
+</div>
+
+
+
+</body>
+
+</html>
