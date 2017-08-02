@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>暂无权限</title>
+
+  <script src="/assets/application.js"></script>
+</head>
+<style type="text/css">
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .app-store-content {
+    background: #fff;
+  }
+
+  .edit-comment-submit {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .app-try-now {
+    background: #2da7fb;
+    color: #fff;
+    border-radius: 3px;
+    padding: 9px 100px;
+    text-decoration: none;
+  }
+</style>
+<body>
+<!--中间部分 start-->
+<div class="app-store-content">
+  <!--暂无提醒 start-->
+  <div class="none-notice">
+    <div align="center"><img src="<%= Rails.root.join('app', 'assets', 'images', 'error02.jpg') %>"></div>
+    <div class="edit-comment-submit">
+      <a href="###" data-method="delete" class="app-try-now" type="button">退出登录</a>
+    </div>
+  </div>
+  <!--暂无提醒 end-->
+</div>
+<!--中间部分 end-->
+</body>
+</html>

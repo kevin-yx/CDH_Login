@@ -55,3 +55,9 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'mechanize'
 gem 'watir-webdriver'
 gem 'selenium-webdriver'
+
+gem 'pdfkit'
+gem 'wkhtmltopdf-binary'
+
+gem 'rest-client'
+gem 'faraday-cookie_jar'

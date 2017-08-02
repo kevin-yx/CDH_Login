@@ -1,25 +1,35 @@
 # 模拟CDH登陆
 require "mechanize"
 require 'watir-webdriver'
+require 'net/https'
+require 'uri'
+require 'rest-client'
 class ChdLoginController < ApplicationController
 
   def index
     url = URI.parse('http://120.27.163.174:7180/j_spring_security_check')
-    @access_url = URI.parse('http://120.27.163.174:7180/cmf/home')
+    response = Net::HTTP.post_form(url, {'j_username' => "admin",
+                                         'j_password' => "admin"
+    })
 
-    # response = Net::HTTP.post_form(url, {'j_username' => "admin",
-    #                                      'j_password' => "admin"
-    # })
+
+    cooke_info = response.header['set-cookie'].split(';')[0]
+
     #http://114.55.41.98:7180/cmf/login
     # response = RestClient.get('http://120.27.163.174:7180/j_spring_security_check',
     #                           {j_username: 'admin', j_password: 'admin'})
-    response = RestClient.post('http://120.27.163.174:7180/j_spring_security_check',
-                               {j_username: 'admin', j_password: 'admin'},
-                               headers={}
-    )
+    # response = RestClient.post('http://120.27.163.174:7180/j_spring_security_check',
+    #                            {j_username: 'admin', j_password: 'admin'},
+    #                            headers={}
+    # )
+    # cooke_info = response.cookies.values.first
 
-    cooke_info = response.cookies['CLOUDERA_MANAGER_SESSIONID']
-    cooke_info = response.cookies.values.first
+    @response2 = RestClient::Request.execute(
+        method: :get,
+        url: 'http://120.27.163.174:7180/cmf/home'
+
+    )
+    @access_url = URI.parse('http://120.27.163.174:7180/cmf/home')
     # res = Net::HTTP.post_form(url, {j_username: 'admin', j_password: 'admin'})
     # cook_tmp = res.header['set-cookie']
 
@@ -34,12 +44,12 @@ class ChdLoginController < ApplicationController
     #     cookies: {session_id: cooke_info}
     # )
 
-    @response2= RestClient.get('http://120.27.163.174:7180/cmf/home',
-                               {cookies: {session_id: cooke_info}}
+    # @response2= RestClient.get('http://120.27.163.174:7180/cmf/home',
+    #                            {cookies: {session_id: cooke_info}}
+    #
+    # )
 
-    )
-
-    puts @response2
+    puts @response2.body.to_s
   end
 
   def login_test
@@ -66,7 +76,7 @@ class ChdLoginController < ApplicationController
     puts index_page.body
     @html_info = index_page.body
     # index_page.open()
-     render :plain => index_page.body.to_s
+    render :plain => index_page.body.to_s
   end
 
   def login_with_cookie
@@ -115,6 +125,10 @@ class ChdLoginController < ApplicationController
 
     # b.goto('http://120.27.163.174:7180/cmf/home')
     # b.close
+  end
+
+  def test_login
+
   end
 
 end

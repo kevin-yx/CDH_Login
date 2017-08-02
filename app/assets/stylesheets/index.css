@@ -1,0 +1,292 @@
+@charset "utf-8";
+/* CSS Document */
+/** 清除内外边距 **/
+body, div, span, h1, h2, h3, h4, h5, h6, hr, p, blockquote, /* structural elements 结构元素 */
+dl, dt, dd, ul, ol, li, /* list elements 列表元素 */
+pre, /* text formatting elements 文本格式元素 */
+form, fieldset, legend, button, input, textarea, /* form elements 表单元素 */
+th, td, /* table elements 表格元素 */
+img /* img elements 图片元素 */
+{
+    border: medium none;
+    margin: 0;
+    padding: 0;
+    font-size: 100%;
+    font: inherit; /*max-width:100%;*/
+    /* [disabled]padding: 0;
+   */
+}
+
+/** 设置默认字体 **/
+body, button, input, select, textarea {
+    font: 12px/1.5 微软雅黑, Arial, "microsoft yahei", "\5FAE\8F6F\96C5\9ED1";
+    outline: none;
+    line-height: 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 100%;
+}
+
+em {
+    font-style: normal;
+}
+
+i {
+    font-style: normal
+}
+
+b {
+    font-weight: normal;
+}
+
+/**这只html和BODY标签默认100%宽度**/
+html, body {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/** 重置列表元素 **/
+ul, ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/** 重置超链接元素 **/
+a {
+    text-decoration: none;
+    color: #6D6D6D;
+}
+
+a:hover {
+}
+
+/** 重置图片元素 **/
+img {
+    display: block;
+    border: 0px;
+    vertical-align: middle;
+}
+
+/**清除浮动**/
+.clear {
+    clear: both;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+/** 重置表格元素 **/
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+.site-wrapper {
+    display: table;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+}
+
+.top {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background: url(/Users/yangxi/Documents/self_project/CDH_Login/app/assets/images/top.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+.logo {
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    margin-left: -110px;
+    height: 30px;
+    width: 220px;
+    background: url(/Users/yangxi/Documents/self_project/CDH_Login/app/assets/images/logo.png) no-repeat;
+    background-size: 100% 100%;
+}
+
+.data-body {
+    background: url(/Users/yangxi/Documents/self_project/CDH_Login/app/assets/images/bg.jpg);
+    background-size: 100% 100%;
+}
+
+.center-img {
+    background: url(/Users/yangxi/Documents/self_project/CDH_Login/app/assets/images/center.png) no-repeat center 130px;
+    background-size: 620px 460px;
+}
+
+/**左边**/
+.date-center-left {
+    padding-left: 1%;
+    float: left;
+    width: 26%;
+}
+
+.total-data {
+    width: 100%;
+    background: url(/Users/yangxi/Documents/self_project/CDH_Login/app/assets/images/box-bg.png) no-repeat;
+    background-size: 100% 100%;
+    padding: 30px 0 25px 0;
+    margin-bottom: 15px;
+}
+
+.total-data-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00d2ff;
+    text-align: center;
+}
+
+.total-data-title span {
+    font-weight: normal;
+    font-size: 14px;
+}
+
+.title-line {
+    display: inline-block;
+    height: 1px;
+    width: 19%;
+    border-bottom: 1px solid #00d2ff;
+    margin-bottom: 7px;
+}
+
+.w_25 {
+    width: 25%;
+}
+
+.w_5 {
+    width: 5%;
+}
+
+.total-data-number {
+    font-family: fantasy;
+    font-size: 34px;
+    text-align: center;
+    padding: 15px 0;
+}
+
+.c_ebb31c {
+    color: #ebb31c;
+}
+
+.data-des-box ul {
+    overflow: hidden;
+}
+
+.data-des-box ul li {
+    float: left;
+    width: 33.3%;
+    text-align: center;
+    position: relative;
+    font-size: 14px;
+}
+
+.data-des-box ul li:after {
+    position: absolute;
+    content: "";
+    width: 1px;
+    height: 100%;
+    right: 0;
+    top: 0;
+    border-right: 1px solid #2b64cb;
+}
+
+.data-des-box ul li:last-child:after {
+    border-right: none;
+}
+
+.data-name {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.data-interface-box ul li {
+    width: 50%;
+}
+
+.date-center-middle {
+    float: left;
+    padding-top: 2.5%;
+    width: 48%;
+}
+
+.list_lh {
+    margin-left: 25%;
+    height: 32px;
+    overflow: hidden;
+    width: 50%;
+    background: url(/Users/yangxi/Documents/self_project/CDH_Login/app/assets/images/c-title-bg.png);
+    background-size: 100% 100%;
+}
+
+.list_lh li {
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    color: #fff;
+    font-size: 16px;
+}
+
+.list_lh li.lieven {
+
+}
+
+.list_lhsql {
+    overflow: hidden;
+    width: 100%;
+    height: 130px;
+    background: url(/Users/yangxi/Documents/self_project/CDH_Login/app/assets/images/data-detail-bg.png);
+    background-size: 100% 100%;
+}
+
+.list_lhsql li {
+    height: 22px;
+    line-height: 22px;
+    font-size: 13px;
+    color: #fff;
+    text-indent: 30px;
+}
+
+.data-detail-box {
+    width: 47%;
+    position: absolute;
+    bottom: 15px;
+    left: 26%;
+}
+
+.data-detail-box .data-detail-list-box {
+    width: 30.8%;
+    margin-left: 2.5%;
+    float: left;
+}
+
+.data-detail-img img {
+    width: 100%;
+}
+
+.data-detail-title {
+    height: 36px;
+    line-height: 36px;
+    color: #fff;
+    background: url(/Users/yangxi/Documents/self_project/CDH_Login/app/assets/images/detail-title.png) no-repeat;
+    background-size: 100% 100%;
+    text-align: center;
+    margin: 5px 0;
+}
+
+.date-center-right {
+    width: 26%;
+    float: right;
+    padding-right: 1%;
+}
