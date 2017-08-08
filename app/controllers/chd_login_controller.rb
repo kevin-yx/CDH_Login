@@ -4,7 +4,48 @@ require 'watir-webdriver'
 require 'net/https'
 require 'uri'
 require 'rest-client'
+module EasyHTTP
+  class HTTP
+    def initialize(url)
+      @url = url
+      @cookie = nil
+    end
+
+    def login
+      uri = URI.parse(@url)
+      params = {}
+      params['j_username'] = 'admin'
+      params['j_password'] = 'admin'
+      res = Net::HTTP.post_form(uri, params)
+      @cookie = res.header['set-cookie'].split(';')[0]
+    end
+
+    def get(url)
+      login unless @cookie
+      uri = URI.parse(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Get.new(uri.path)
+      request['Cookie'] = @cookie
+      res = http.request(request)
+      res.body
+      @cookie
+
+    end
+  end
+end
+
 class ChdLoginController < ApplicationController
+
+  def abc
+    sample = EasyHTTP::HTTP.new("http://120.27.163.174:7180/j_spring_security_check")
+    ck_info = sample.get("http://120.27.163.174:7180/cmf/home")
+    # @access_url = "http://120.27.163.174:7180/cmf/home"
+    # redirect_to "http://120.27.163.174:7180/cmf/home"
+    cookies['CLOUDERA_MANAGER_SESSIONID']= ck_info.split('=')[1]
+
+
+    redirect_to "http://120.27.163.174:7180/cmf/home"
+  end
 
   def index
     url = URI.parse('http://120.27.163.174:7180/j_spring_security_check')
@@ -52,31 +93,50 @@ class ChdLoginController < ApplicationController
     puts @response2.body.to_s
   end
 
+  def bbb
+    # agent = Mechanize.new
+    # login_page = agent.get "http://120.27.163.174:7180/cmf/login"
+    # login_form = login_page.forms.first
+    #
+    # username_field = login_form.field_with(:name => "j_username")
+    # username_field.value = "admin"
+    # password_field = login_form.field_with(:name => "j_password")
+    # password_field.value = "admin"
+    #
+    # # 登陆页面登陆成功
+    # step2_page = agent.submit login_form
+    # tmp_cookie = agent.cookie_jar
+    # home_page = agent.get("http://120.27.163.174:7180/cmf/home")
+  end
+
   def login_test
-    agent = Mechanize.new
-    login_page = agent.get "http://120.27.163.174:7180/cmf/login"
-    login_form = login_page.forms.first
-
-    username_field = login_form.field_with(:name => "j_username")
-    username_field.value = "admin"
-    password_field = login_form.field_with(:name => "j_password")
-    password_field.value = "admin"
-
-    # 登陆页面登陆成功
-    step2_page = agent.submit login_form
-    tmp_cookie = agent.cookie_jar
-
-
-    index_page = agent.get("http://120.27.163.174:7180/api/v11/clusters/Cluster1/services/impala/impalaQueries")
-
-    cookies['CLOUDERA_MANAGER_SESSIONID'] = agent.cookie_jar.cookies(URI.parse("http://120.27.163.174:7180/cmf/home")).first.value
-    @current_url = index_page.uri
-    # doc = Nokogiri::HTML(open(index_page.uri.to_s))
-    # puts doc
-    puts index_page.body
-    @html_info = index_page.body
-    # index_page.open()
-    render :plain => index_page.body.to_s
+    # agent = Mechanize.new
+    # login_page = agent.get "http://120.27.163.174:7180/cmf/login"
+    # login_form = login_page.forms.first
+    #
+    # username_field = login_form.field_with(:name => "j_username")
+    # username_field.value = "admin"
+    # password_field = login_form.field_with(:name => "j_password")
+    # password_field.value = "admin"
+    #
+    # # 登陆页面登陆成功
+    # step2_page = agent.submit login_form
+    # tmp_cookie = agent.cookie_jar
+    #
+    #
+    # # index_page = agent.get("http://120.27.163.174:7180/api/v11/clusters/Cluster1/services/impala/impalaQueries")
+    #
+    # home_page = agent.get("http://120.27.163.174:7180/cmf/home")
+    #
+    # cookies['CLOUDERA_MANAGER_SESSIONID'] = agent.cookie_jar.cookies(URI.parse("http://120.27.163.174:7180/cmf/home")).first.value
+    # # @current_url = index_page.uri
+    # # doc = Nokogiri::HTML(open(index_page.uri.to_s))
+    # # puts doc
+    # puts home_page.body
+    # @html_info = home_page.body
+    # @current_url = home_page.uri
+    # # index_page.open()
+    # # render :plain => home_page.body.to_s
   end
 
   def login_with_cookie

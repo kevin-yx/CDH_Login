@@ -1,5 +1,100 @@
-<!--<#%= raw @html_info %>-->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js" type="text/javascript"></script>
 
-<iframe src="<%= @current_url %>" style="height: 800px;width: 1024px;">
+  <%= csrf_meta_tags %>
 
-</iframe>
+
+
+</head>
+<style type="text/css">
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .app-store-content {
+    background: #fff;
+  }
+
+  .edit-comment-submit {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .app-try-now {
+    background: #2da7fb;
+    color: #fff;
+    border-radius: 3px;
+    padding: 9px 100px;
+    text-decoration: none;
+  }
+</style>
+<body>
+<!--中间部分 start-->
+<div class="app-store-content">
+  <!--暂无提醒 start-->
+  <div class="none-notice">
+    <div align="center"></div>
+    <div class="edit-comment-submit">
+      <a href="javascript:void(0);" id="btn_login">确定</a>
+    </div>
+  </div>
+  <!--暂无提醒 end-->
+</div>
+<!--中间部分 end-->
+</body>
+</html>
+
+<script type="text/javascript">
+  $(function () {
+
+      $('#btn_login').click(function(){
+          openPostWindow('http://120.27.163.174:7180/j_spring_security_check',
+              'cdh_manage','j_username','admin','j_password','admin')
+
+      })
+  })
+
+
+  function openWindow(name){
+      window.open ('about:blank',name,'height=500,width=600,top=0,left=0,toolbar=no,menubar=no,scrollbars=yes, resizable=no,location=no, status=no')
+  }
+  function openPostWindow(url, name,user_id, data1,pwd,data2)
+  {
+      var tempForm = document.createElement("form");
+      tempForm.id="tempForm1";
+      tempForm.method="post";
+      tempForm.action=url;
+      tempForm.target=name;
+
+      var hideInput = document.createElement("input");
+      hideInput.type="hidden";
+      hideInput.name= user_id
+      hideInput.value= data1;
+      tempForm.appendChild(hideInput);
+
+      var hideInput2 = document.createElement("input");
+      hideInput2.type="hidden";
+      hideInput2.name= pwd
+      hideInput2.value= data2;
+      tempForm.appendChild(hideInput2);
+
+      if(window.addEventListener) {
+          tempForm.addEventListener("onsubmit",function(){ openWindow(name); });
+      } else if(window.attachEvent){
+          tempForm.attachEvent("onsubmit",function(){ openWindow(name); });
+      }
+      document.body.appendChild(tempForm);
+
+//tempForm.fireEvent("onsubmit");
+      tempForm.submit();
+      document.body.removeChild(tempForm);
+  }
+
+
+</script>
